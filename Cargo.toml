@@ -1,0 +1,15 @@
+[package]
+name = "cosmic-copyous"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rusqlite = { version = "0.31", features = ["bundled"] }
+tokio = { version = "1.37", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+arboard = "3.4"
+chrono = "0.4"
+# Usamos 'iced' nativo (el framework base sobre el cual está construido COSMIC). 
+# Esto brinda la máxima estabilidad gráfica evitando las constantes roturas de ABI de libcosmic que sigue en desarrollo cerrado.
+iced = { version = "0.12", features = ["tokio"] }
