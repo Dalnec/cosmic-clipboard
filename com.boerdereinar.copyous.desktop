@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Portapapeles Copyous
+Comment=Applet de panel para el historial del portapapeles
+Type=Application
+Exec=cosmic-copyous
+Icon=edit-copy-symbolic
+Terminal=false
+Categories=Utility;
+X-Cosmic-Applet=true

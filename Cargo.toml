@@ -10,6 +10,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 arboard = "3.4"
 chrono = "0.4"
-# Usamos 'iced' nativo (el framework base sobre el cual está construido COSMIC). 
-# Esto brinda la máxima estabilidad gráfica evitando las constantes roturas de ABI de libcosmic que sigue en desarrollo cerrado.
-iced = { version = "0.12", features = ["tokio"] }
+futures-util = "0.3"
+
+[dependencies.libcosmic]
+git = "https://github.com/pop-os/libcosmic.git"
+features = ["applet", "tokio", "wayland", "winit"]

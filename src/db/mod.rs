@@ -99,7 +99,7 @@ impl Database {
     pub fn get_entries(&self) -> Result<Vec<ClipboardEntry>> {
         let mut stmt = self.conn.prepare(
             "SELECT id, type, content, pinned, tag, datetime, metadata, title
-             FROM clipboard ORDER BY datetime DESC"
+             FROM clipboard ORDER BY pinned DESC, datetime DESC"
         )?;
 
         let entry_iter = stmt.query_map([], |row| {
@@ -129,6 +129,14 @@ impl Database {
     #[allow(dead_code)]
     pub fn delete_entry(&self, id: i64) -> Result<()> {
         self.conn.execute("DELETE FROM clipboard WHERE id = ?1", params![id])?;
+        Ok(())
+    }
+
+    pub fn update_entry_metadata(&self, id: i64, pinned: bool, tag: Option<String>, title: Option<String>) -> Result<()> {
+        self.conn.execute(
+            "UPDATE clipboard SET pinned = ?1, tag = ?2, title = ?3 WHERE id = ?4",
+            params![pinned, tag, title, id],
+        )?;
         Ok(())
     }
 }
