@@ -5,7 +5,20 @@ use cosmic::widget;
 use std::time::Duration;
 
 use crate::db::Database;
-use crate::db::models::ClipboardEntry;
+use crate::db::models::{ClipboardEntry, ItemType};
+
+fn sanitize_text(s: &str) -> String {
+    let sanitized: String = s.chars()
+        .map(|c| if c.is_control() && !matches!(c, '\n' | '\r' | '\t') { ' ' } else { c })
+        .take(500)
+        .collect();
+    
+    if s.chars().count() > 500 {
+        format!("{}...", sanitized)
+    } else {
+        sanitized
+    }
+}
 
 pub struct CopyousApp {
     core: cosmic::Core,
@@ -162,7 +175,13 @@ impl cosmic::Application for CopyousApp {
                      }
 
                      // Texto parcial original copiado
-                     let content_preview = widget::text(entry.content.clone()).size(15);
+                     let display_content = if entry.item_type == ItemType::Image {
+                         "[Imagen/Datos Binarios]".to_string()
+                     } else {
+                         sanitize_text(&entry.content)
+                     };
+                     
+                     let content_preview = widget::text(display_content).size(15);
                      content_elements.push(content_preview.into());
 
                      // Botones de acción
