@@ -54,9 +54,15 @@ pub async fn start_monitoring(db_path: String) {
                         let now = Local::now();
                         let datetime_str = now.format("%Y-%m-%d %H:%M:%S").to_string();
 
+                        let item_type = if text.starts_with("http://") || text.starts_with("https://") {
+                            ItemType::Link
+                        } else {
+                            ItemType::Text
+                        };
+
                         let entry = ClipboardEntry {
                             id: None,
-                            item_type: ItemType::Text,
+                            item_type,
                             content: text.clone(),
                             pinned: false,
                             tag: None,

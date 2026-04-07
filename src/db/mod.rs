@@ -132,6 +132,10 @@ impl Database {
         Ok(())
     }
 
+    pub fn delete_all_unpinned(&self) -> Result<usize> {
+        self.conn.execute("DELETE FROM clipboard WHERE pinned = 0", [])
+    }
+
     pub fn update_entry_metadata(&self, id: i64, pinned: bool, tag: Option<String>, title: Option<String>) -> Result<()> {
         self.conn.execute(
             "UPDATE clipboard SET pinned = ?1, tag = ?2, title = ?3 WHERE id = ?4",
