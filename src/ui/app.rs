@@ -230,6 +230,21 @@ impl cosmic::Application for CopyousApp {
             .on_input(Message::SearchChanged)
             .on_clear(Message::SearchChanged(String::new()));
 
+        // ── Action buttons (below search, left-aligned) ─────────────
+        let btn_clear = widget::button::standard("Limpiar no fijados")
+            .on_press(Message::ClearAllUnpinned);
+
+        let btn_quit = widget::button::destructive("Salir")
+            .on_press(Message::Quit);
+
+        let action_row = widget::row(vec![
+            widget::Space::new().width(Length::Fill).into(),
+            btn_clear.into(),
+            btn_quit.into(),
+        ])
+        .spacing(8)
+        .align_y(Alignment::Center);
+
         // ── Filter entries ───────────────────────────────────────────
         let filtered_entries: Vec<&ClipboardEntry> = self
             .entries
@@ -286,31 +301,13 @@ impl cosmic::Application for CopyousApp {
         .width(Length::Fill)
         .height(Length::Fill);
 
-        // ── Footer ───────────────────────────────────────────────────
-        let btn_clear = widget::button::standard("Limpiar no fijados")
-            .on_press(Message::ClearAllUnpinned)
-            .width(Length::Fill);
-
-        let btn_quit = widget::button::destructive("Salir")
-            .on_press(Message::Quit)
-            .width(Length::Fill);
-
-        let footer = widget::row(vec![
-            btn_clear.into(),
-            btn_quit.into(),
-        ])
-        .spacing(8)
-        .padding([8, 12])
-        .align_y(Alignment::Center);
-
         // ── Assemble popup ───────────────────────────────────────────
         let popup_layout = widget::column(vec![
             widget::container(header).padding([12, 12, 4, 12]).into(),
             widget::container(search_box).padding([0, 12, 8, 12]).into(),
+            widget::container(action_row).padding([0, 12, 8, 12]).into(),
             widget::divider::horizontal::default().into(),
             scroll_body.into(),
-            widget::divider::horizontal::default().into(),
-            footer.into(),
         ]);
 
         self.core.applet.popup_container(popup_layout).into()
@@ -584,13 +581,16 @@ impl CopyousApp {
             .on_input(Message::InputTagChanged)
             .padding(6);
 
-        let btn_save = widget::button::suggested("Guardar")
-            .on_press(Message::SaveEdits(entry_id))
-            .padding(6);
+
+        let btn_save = widget::button::standard("Guardar")
+        .on_press(Message::SaveEdits(entry_id))
+        .width(Length::Fill)
+        .class(ButtonClass::Suggested);
 
         let btn_cancel = widget::button::standard("Cancelar")
-            .on_press(Message::CancelEdits)
-            .padding(6);
+        .on_press(Message::CancelEdits)
+        .width(Length::Fill)
+        .class(ButtonClass::Standard);
 
         let preview = widget::text::caption(sanitize_preview(&entry.content, 60));
 
